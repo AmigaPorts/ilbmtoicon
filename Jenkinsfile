@@ -74,6 +74,7 @@ def buildStep(ext, hostFlags = '', sysRoot = true) {
 			sh "cd ${env.WORKSPACE}/ && CC=\"ccache ${ext}-gcc ${sysRootEnv}\" HOST_LIBPNG=\"-lpng -lm\" HOST_STRIP=\"${ext}-strip\" HOST_CFLAGS=\"${hostFlags}\" HOST_LDFLAGS=\"${hostFlags}\" CPP=\"ccache ${ext}-cpp ${sysRootEnv}\" CXX=\"ccache ${ext}-g++ ${sysRootEnv}\" make -j8 "
 
 			sh "cd ${env.WORKSPACE}/ && mv -fv ilbmtoicon infoinfo ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/"
+			sh "cd ${env.WORKSPACE}/ && cp -fvr README.md LICENSE ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/"
 
 			if (!env.CHANGE_ID) {
 				sh "cd ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/ && lha c ../ilbmtoicon-${ext}.lha *"
