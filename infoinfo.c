@@ -21,6 +21,8 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
+#elif __amigaos4__
+#include <netinet/in.h>
 #else
 #include <arpa/inet.h>
 #endif
