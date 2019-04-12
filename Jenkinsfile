@@ -65,7 +65,7 @@ def buildStep(ext) {
       }
 			sh "cd ${env.WORKSPACE}/ && make -j8 clean"
 			
-			sh "cd ${env.WORKSPACE}/ && make  CC=\"ccache ${ext}-gcc --sysroot=/opt/toolchains/${ext}/\" CPP=\"ccache ${ext}-cpp --sysroot=/opt/toolchains/${ext}/\" CXX=\"ccache ${ext}-g++ --sysroot=/opt/toolchains/${ext}/\" -j8 "
+			sh "cd ${env.WORKSPACE}/ && CC=\"ccache ${ext}-gcc --sysroot=/opt/toolchains/${ext}/\" CFLAGS=\"-noixemul\" CPP=\"ccache ${ext}-cpp --sysroot=/opt/toolchains/${ext}/\" CXX=\"ccache ${ext}-g++ --sysroot=/opt/toolchains/${ext}/\" make -j8 "
 
       sh "cd ${env.WORKSPACE}/ && mv -fv ilbmtoicon infoinfo ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/"
 			if (!env.CHANGE_ID) {
