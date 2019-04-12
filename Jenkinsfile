@@ -134,6 +134,11 @@ node('master') {
 			node {			
 				buildStep('ppc-morphos')
 			}
+		},
+  		'Build Linux-x86_64 version': {
+			node {			
+				buildStep('x86_64-linux-gnu')
+			}
 		}
 	)
 }
