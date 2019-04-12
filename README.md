@@ -1,4 +1,4 @@
-ilbmtoicon
+# ilbmtoicon
 
   converts one or two ilbm image files into an amiga icon file
   which will contain both old style (pre 3.5) image data and
@@ -9,7 +9,7 @@ ilbmtoicon
   PNG images are specified, the resulting .info file will simply
   result in both images being joined together.
   
-usage
+## usage
 
   ilbmtoicon DESCRIPTIONFILE IMAGE1 [IMAGE2] outfile
   
@@ -18,7 +18,7 @@ usage
   an Amiga style icon (ILBM) or a PNG style icon (PNG) will be
   created.
   
-icondescription file
+## icondescription file
 
   Is a text file which should be named ICONNAME.info.src.
   If the specified file does not exist this is silently ignored.
