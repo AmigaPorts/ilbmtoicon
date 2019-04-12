@@ -132,7 +132,7 @@ node('master') {
 		},
   		'Build AmigaOS4.x version': {
 			node {			
-				buildStep('ppc-amigaos')
+				buildStep('ppc-amigaos','-I/opt/toolchains/ppc-amigaos/include -L/opt/toolchains/ppc-amigaos/lib',false)
 			}
 		},
   		'Build MorphOS version': {
