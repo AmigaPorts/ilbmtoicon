@@ -21,7 +21,7 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
-#elif __amigaos4__
+#elif defined(__amigaos4__) || defined(__WARPOS__)
 #include <netinet/in.h>
 #else
 #include <arpa/inet.h>
