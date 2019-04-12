@@ -50,7 +50,7 @@
 /* For this tool it does not really matter if the following types
    have a bigger sizeof() than on Amiga */
 
-#ifndef __AROS__
+#if !defined(__AROS__) && !defined(__AMIGA__) && !defined(__MORHPOS__) && !defined(__amigaos4__)
 typedef void           *APTR;
 typedef unsigned long 	ULONG;
 typedef long	    	LONG;
