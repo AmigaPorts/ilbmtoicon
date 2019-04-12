@@ -38,7 +38,7 @@ def killall_jobs() {
 	echo "Done killing"
 }
 
-def buildStep(ext) {
+def buildStep(ext, hostFlags = '') {
 	def fixed_job_name = env.JOB_NAME.replace('%2F','/')
 	try{
 		stage("Building ${ext}...") {
@@ -65,7 +65,7 @@ def buildStep(ext) {
       }
 			sh "cd ${env.WORKSPACE}/ && make -j8 clean"
 			
-			sh "cd ${env.WORKSPACE}/ && CC=\"ccache ${ext}-gcc --sysroot=/opt/toolchains/${ext}/\" HOST_LIBPNG=\"-lpng -lm\" HOST_STRIP=\"${ext}-strip\" HOST_CFLAGS=\"-noixemul\" HOST_LDFLAGS=\"-noixemul\" CPP=\"ccache ${ext}-cpp --sysroot=/opt/toolchains/${ext}/\" CXX=\"ccache ${ext}-g++ --sysroot=/opt/toolchains/${ext}/\" make -j8 "
+			sh "cd ${env.WORKSPACE}/ && CC=\"ccache ${ext}-gcc --sysroot=/opt/toolchains/${ext}/\" HOST_LIBPNG=\"-lpng -lm\" HOST_STRIP=\"${ext}-strip\" HOST_CFLAGS=\"${hostFlags}\" HOST_LDFLAGS=\"${hostFlags}\" CPP=\"ccache ${ext}-cpp --sysroot=/opt/toolchains/${ext}/\" CXX=\"ccache ${ext}-g++ --sysroot=/opt/toolchains/${ext}/\" make -j8 "
 
       sh "cd ${env.WORKSPACE}/ && mv -fv ilbmtoicon infoinfo ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/"
 			if (!env.CHANGE_ID) {
@@ -122,7 +122,7 @@ node('master') {
 	parallel (
 		'Build AmigaOS3.x version': {
 			node {			
-				buildStep('m68k-amigaos')
+				buildStep('m68k-amigaos','-noixemul -m68020-60 -msoft-float')
 			}
 		},
   		'Build AmigaOS4.x version': {
