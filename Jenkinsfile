@@ -145,7 +145,7 @@ node('master') {
 		},
 		'Build WarpOS version': {
 			node {
-				buildStep('ppc-warpos','-specs=warpup -D__WARPOS__')
+				buildStep('ppc-warpos','-v -specs=warpup -D__WARPOS__')
 			}
 		},
 		'Build Linux-x86_64 version': {
