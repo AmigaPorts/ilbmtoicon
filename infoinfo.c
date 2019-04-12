@@ -21,8 +21,11 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
-#elif defined(__amigaos4__) || defined(__WARPOS__)
-#include <netinet/in.h>
+#elif defined(__amigaos4__) || defined(WARPUP) || defined(__AMIGA__) || defined(__MORPHOS__)
+#define ntohl(x)        (x)
+#define ntohs(x)        (x)
+#define htonl(x)        (x)
+#define htons(x)        (x)
 #else
 #include <arpa/inet.h>
 #endif
