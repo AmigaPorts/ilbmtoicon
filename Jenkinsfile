@@ -67,12 +67,14 @@ def buildStep(ext, hostFlags = '', sysRoot = true) {
 
 			if (!env.CHANGE_ID) {
 				sh "mkdir -p ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/"
-      }
+			}
+
 			sh "cd ${env.WORKSPACE}/ && make -j8 clean"
 			
 			sh "cd ${env.WORKSPACE}/ && CC=\"ccache ${ext}-gcc ${sysRootEnv}\" HOST_LIBPNG=\"-lpng -lm\" HOST_STRIP=\"${ext}-strip\" HOST_CFLAGS=\"${hostFlags}\" HOST_LDFLAGS=\"${hostFlags}\" CPP=\"ccache ${ext}-cpp ${sysRootEnv}\" CXX=\"ccache ${ext}-g++ ${sysRootEnv}\" make -j8 "
 
-      sh "cd ${env.WORKSPACE}/ && mv -fv ilbmtoicon infoinfo ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/"
+			sh "cd ${env.WORKSPACE}/ && mv -fv ilbmtoicon infoinfo ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/"
+
 			if (!env.CHANGE_ID) {
 				sh "cd ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/ && lha c ../ilbmtoicon-${ext}.lha *"
 				sh "rm -rfv ${env.WORKSPACE}/publishing/deploy/ilbmtoicon/${ext}/*"
@@ -130,17 +132,22 @@ node('master') {
 				buildStep('m68k-amigaos','-noixemul -m68020-60 -msoft-float')
 			}
 		},
-  		'Build AmigaOS4.x version': {
+		'Build AmigaOS4.x version': {
 			node {			
 				buildStep('ppc-amigaos','-I/opt/toolchains/ppc-amigaos/include -L/opt/toolchains/ppc-amigaos/lib',false)
 			}
 		},
-  		'Build MorphOS version': {
+		'Build MorphOS version': {
 			node {			
 				buildStep('ppc-morphos')
 			}
 		},
-  		'Build Linux-x86_64 version': {
+		'Build WarpOS version': {
+			node {
+				buildStep('ppc-warpos','--specs=warpup')
+			}
+		},
+		'Build Linux-x86_64 version': {
 			node {			
 				buildStep('x86_64-linux-gnu','',false)
 			}
