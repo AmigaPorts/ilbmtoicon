@@ -140,7 +140,7 @@ struct Palette magicwb8colpal =
 struct Palette scalos16colpal =
 {
     16,
-    {   
+    {
 	{ 0x9c, 0x9c, 0x9c },   /*  0 - Gray */
 	{ 0x00, 0x00, 0x00 },   /*  1 - Black */
 	{ 0xFF, 0xFF, 0xFF },   /*  2 - White */
@@ -207,13 +207,13 @@ static BOOL		    nosaveIFF; /* Don't save any IFF data */
 /****************************************************************************************/
 
 static void freeimage(struct ILBMImage *img)
-{        
+{
     if (img->chunkybuffer)
     {
     	free(img->chunkybuffer);
 	img->chunkybuffer = NULL;
     }
-    
+
     if (img->planarbuffer)
     {
     	free(img->planarbuffer);
@@ -225,13 +225,13 @@ static void freeimage(struct ILBMImage *img)
         free(img->argb);
         img->argb = NULL;
     }
-    
+
     if (filebuffer)
     {
     	free(filebuffer);
 	filebuffer = NULL;
     }
-    
+
     if (file)
     {
     	fclose(file);
@@ -246,13 +246,13 @@ static void freeimage(struct ILBMImage *img)
 static void cleanup(char *msg, int rc)
 {
     if (msg) fprintf(stderr, "ilbmtoicon: %s\n", msg);
-    
+
     freeimage(&img1);
     freeimage(&img2);
-    
+
     if (outfile) fclose(outfile);
     if (infile) fclose(infile);
-    
+
     exit(rc);
 }
 
@@ -297,13 +297,12 @@ static void getarguments(int argc, char **argv)
         }
     }
 
-    
     if ((argc != 4) && (argc != 5))
     {
     	fprintf(stderr, "Wrong number of arguments\n");
     	cleanup("Usage: ilbmtoicon [--png] [--no-argb] [--no-iff] icondescription image1 [image2] filename", 1);
     }
-    
+
     if (argc == 4)
     {
     	infilename   = argv[1];
@@ -324,7 +323,7 @@ static void getarguments(int argc, char **argv)
 static char *skipblanks(char *s)
 {
     while ((*s == ' ') || (*s == '\t')) s++;
-    
+
     return s;
 }
 
@@ -339,7 +338,7 @@ static char *skipword(char *s)
     {
     	s++;
     }
-    
+
     return s;
 }
 
@@ -356,13 +355,12 @@ static char *checkquotes(char *s)
     {
     	s2 = skipword(s);
 	*s2 = '\0';
-	
+
     	return s;
     }
-    
+
     s++;
 
-    
     while ((i < 256) && (s3[i] = *s))
     {
         if (!escaped)
@@ -421,7 +419,6 @@ struct cycle showcycles[] =
     {"ICONS"   	, 1},
     {"ALL"  	, 2},
     {NULL   	, 0}
-    
 };
 
 struct cycle showascycles[] =
@@ -431,9 +428,8 @@ struct cycle showascycles[] =
     {"TEXT_NAME", 2},
     {"TEXT_DATE", 3},
     {"TEXT_SIZE", 4},
-    {"TEXT_TYPE", 5},	
+    {"TEXT_TYPE", 5},
     {NULL   	, 0}
-    
 };
 
 
@@ -446,6 +442,7 @@ struct keyword
     APTR  store;
     APTR  extra;
 }
+
 keywordtable[] =
 {
     {KEYWORD_STRING 	, "DEFAULTTOOL"     , &defaulttooloption    , NULL  	    	},
@@ -480,7 +477,7 @@ static void handleoption(char *keyword, char *keyvalue)
     for(kw = keywordtable; kw->keyword; kw++)
     {
     	if (strcasecmp(kw->keyword, keyword) == 0)
-	{	
+	{
     	    switch(kw->type)
 	    {
 		case KEYWORD_STRING:
@@ -508,7 +505,7 @@ static void handleoption(char *keyword, char *keyvalue)
 		    {
 		    	*(char ***)kw->store = (char **)malloc(MAX_ARRAY_SIZE * sizeof(char *));
 			if (!(*(char ***)kw->store)) cleanup("Out of memory!", 1);
-			
+
 			memset(*(char ***)kw->store, 0, MAX_ARRAY_SIZE * sizeof(char *));
 		    }
 
@@ -516,29 +513,29 @@ static void handleoption(char *keyword, char *keyvalue)
 		    	char *dupvalue;
 			char **strarray = *(char ***)kw->store;
 			WORD i = 0;
-			
+
 			dupvalue = strdup(keyvalue);
 			if (!dupvalue) cleanup("Out of memory!", 1);
-			
+
 			while(*strarray)
 			{
 			    strarray++;
 			    i++;
 			}
-			
+
 			if (i >= MAX_ARRAY_SIZE - 1) cleanup("Array overflow!", 1);
-			
+
 			*strarray = dupvalue;
 		    }
-		    
+
 	    } /* switch(kw->type) */
 
 	    break;
-	    
+
 	} /* if (strcasecmp(kw->keyword, keyword) == 0) */
-	
+
     } /* for(kw = keywordtable; kw->keyword; kw++) */
-    
+
 }
 
 /****************************************************************************************/
@@ -547,25 +544,25 @@ static void parseline(char *s)
 {
     char *keyword;
     char *keyvalue = NULL;
-    
+
     s = skipblanks(s);
-    
+
     if (*s == '#') return;
     if (*s == ';') return;
-    
+
     keyword = s;
-    
+
     s = skipword(s);
     if (*s == '\0') return;
-    
+
     *s = '\0';
     s = skipblanks(s + 1);
-    
+
     if (*s == '=') s = skipblanks(s + 1);
     if (*s == '\0') return;
 
     keyvalue = checkquotes(s);
-    
+
     handleoption(keyword, keyvalue);
 }
 
@@ -574,7 +571,7 @@ static void parseline(char *s)
 static void parseiconsource(void)
 {
     char s[256];
-    
+
     infile = fopen(infilename, "r");
     if (infile)
     {
@@ -595,11 +592,11 @@ static void parseiconsource(void)
 static void showoptions(void)
 {
     char **strarray;
-    
+
     printf("image1: %s\n", image1option ? image1option : "(NULL)");
     printf("image2: %s\n", image2option ? image2option : "(NULL)");
     printf("type: %ld\n", typeoption);
-    
+
     strarray = tooltypesoption;
     if (strarray)
     {
@@ -617,14 +614,14 @@ static void showoptions(void)
 static ULONG getlong(void)
 {
     ULONG ret;
-    
+
     if (filepos > filesize - 4) cleanup("Tried to read over file end!", 1);
 
     ret =  filebuffer[filepos++] * 0x1000000;
     ret += filebuffer[filepos++] * 0x10000;
     ret += filebuffer[filepos++] * 0x100;
     ret += filebuffer[filepos++];
-    
+
     return ret;
 }
 
@@ -633,12 +630,12 @@ static ULONG getlong(void)
 static UWORD getword(void)
 {
     UWORD ret;
-    
+
     if (filepos > filesize - 2) cleanup("Tried to read over file end!", 1);
 
     ret =  filebuffer[filepos++] * 0x100;
     ret += filebuffer[filepos++];
-    
+
     return ret;
 }
 
@@ -647,10 +644,10 @@ static UWORD getword(void)
 static UBYTE getbyte(void)
 {
     ULONG ret;
-    
+
     if (filepos > filesize - 1) cleanup("Tried to read over file end!", 1);
     ret = filebuffer[filepos++];
-    
+
     return ret;
 }
 
@@ -664,26 +661,26 @@ static void skipbytes(ULONG howmany)
 /****************************************************************************************/
 
 static void openimage(struct ILBMImage *img)
-{    
+{
     file = fopen(filename, "rb");
     if (!file) cleanup("Can't open file!", 1);
-    
+
     fseek(file, 0, SEEK_END);
     filesize = ftell(file);
-    
+
     if (filesize < 12) cleanup("Bad file size!", 1);
-    
+
     //fprintf(stderr, "Filesize is %d\n", filesize);
-    
+
     fseek(file, 0, SEEK_SET);
-    
+
     filebuffer = malloc(filesize + 10);
     if (!filebuffer) cleanup("Memory allocation for file buffer failed!", 1);
-    
+
     if (fread(filebuffer, 1, filesize, file) != filesize)
     	cleanup("Error reading file!", 1);
-    
-    fclose(file); file = NULL;    
+
+    fclose(file); file = NULL;
 }
 
 /****************************************************************************************/
@@ -694,7 +691,7 @@ static void checkimage(struct ILBMImage *img)
 
     ULONG id;
     ULONG size;
-   
+
     if (dualpng) {
         img->png = dualpngstart;
         img->png_size = filesize - (dualpngstart - filebuffer);
@@ -705,7 +702,7 @@ static void checkimage(struct ILBMImage *img)
     {
     	is_png = 1;
     	img->png = filebuffer;
-	
+
 	/* search for second image */
 	for
 	(
@@ -726,7 +723,7 @@ static void checkimage(struct ILBMImage *img)
             img->png_size = filesize;
     }
     else if (is_png == 0)
-    {   
+    {
 	id = getlong();
 	if (id != ID_FORM) cleanup("File is not an IFF file!", 1);
 
@@ -798,7 +795,7 @@ static void loadpng(struct ILBMImage *img, struct Palette *pal)
     }
 
     /* Read the PNG as RGBA */
-    png_set_add_alpha(png_ptr, 255, PNG_FILLER_AFTER); 
+    png_set_add_alpha(png_ptr, 255, PNG_FILLER_AFTER);
     png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_EXPAND | PNG_TRANSFORM_GRAY_TO_RGB | PNG_TRANSFORM_STRIP_16, NULL);
 
     row_pointers = png_get_rows(png_ptr, info_ptr);
@@ -876,11 +873,11 @@ static void loadpng(struct ILBMImage *img, struct Palette *pal)
 static void scanimage(struct ILBMImage *img)
 {
     WORD i;
-    
+
     have_bmhd = 0;
     have_cmap = 0;
     have_body = 0;
-    
+
     if (img->png) {
         /* Load the PNG, using the Scalos 16-color pallette,
          * into the Chunky buffer.
@@ -893,17 +890,17 @@ static void scanimage(struct ILBMImage *img)
     {
     	ULONG id;
 	ULONG size;
-	
+
 	id   = getlong();
 	size = getlong();
 
 	//fprintf(stderr, "Chunk: %c%c%c%c  Size: %d\n", id >> 24, id >> 16, id >> 8, id, size);
-		
+
 	switch(id)
 	{
 	    case ID_BMHD:
 	    	if (size != 20) cleanup("Bad BMHD chunk size!", 1);
-		
+
 	    	img->bmh.bmh_Width 	    = getword();
 		img->bmh.bmh_Height      = getword();
 		img->bmh.bmh_Left 	    = (WORD)getword();
@@ -917,31 +914,31 @@ static void scanimage(struct ILBMImage *img)
 		img->bmh.bmh_YAspect     = getbyte();
 		img->bmh.bmh_PageWidth   = (WORD)getword();
 		img->bmh.bmh_PageHeight  = (WORD)getword();
-		
+
 		if (img->bmh.bmh_Depth > 8) cleanup("ILBM file has too many colors!", 1);
 		if ((img->bmh.bmh_Compression != CMP_NONE) && (img->bmh.bmh_Compression != CMP_BYTERUN1)) cleanup("Compression method unsupported!", 1);
-		
+
 		have_bmhd = 1;
-		
+
 		img->totdepth = img->bmh.bmh_Depth + ((img->bmh.bmh_Masking == MSK_HASMASK) ? 1 : 0);
-		
+
 		img->bpr = ((img->bmh.bmh_Width + 15) & ~15) / 8;
-		
+
 		/*fprintf(stderr, "BMHD: %d x %d x %d (%d)\n", img->bmh.bmh_Width,
 		    	    	    	    	    	     img->bmh.bmh_Height,
 							     img->bmh.bmh_Depth,
 							     img->totdepth);*/
 		img->planarbmh = img->bmh;
 		break;
-	
-	    case ID_CMAP:   
+
+	    case ID_CMAP:
 	    	if (!have_bmhd) cleanup("CMAP chunk before BMHD chunk (or no BMHD chunk at all!", 1);
-		
+
 		img->cmapentries = size / 3;
 		if (size & 1) size++;
-		
+
 		if ((img->cmapentries < 2) || (img->cmapentries > 256)) cleanup("CMAP chunk has bad number of entries!", 1);
-		
+
 		for(i = 0; i < img->cmapentries; i++)
 		{
 		    img->rgb[i][0] = getbyte();
@@ -949,37 +946,37 @@ static void scanimage(struct ILBMImage *img)
 		    img->rgb[i][2] = getbyte();
 		    size -= 3;
 		}
-	    	
+
 		skipbytes(size);
-		
+
 		have_cmap = 1;
-		
+
 		break;
-	
+
 	    case ID_BODY:
 	    	if (!have_bmhd) cleanup("BODY chunk before BMHD chunk (or no BMHD chunk at all!", 1);
 		body = &filebuffer[filepos];
 		bodysize = size;
-		
+
 		if (img->bmh.bmh_Compression == CMP_NONE)
 		{
 		    LONG shouldbesize = img->totdepth * img->bpr * img->bmh.bmh_Height;
 		    if (bodysize != shouldbesize) cleanup("BODY chunk size seems to be wrong!", 1);
 		}
-		
+
 		have_body = 1;
 		/* Fall through */
-		
+
 	    default:
 	    	if (size & 1) size++;
 	    	skipbytes(size);
 		break;
 	}
-	
+
 	if (filepos == filesize) break;
 	if (have_bmhd && have_body && have_cmap) break;
     }
-    
+
     if (!have_bmhd) cleanup("BMHD chunk missing!", 1);
     if (!have_body) cleanup("BODY chunk missing!", 1);
 }
@@ -990,7 +987,7 @@ static unsigned char *unpack_byterun1(unsigned char *source, unsigned char *dest
 {
     unsigned char r;
     signed char c;
-    
+
     for(;;)
     {
 	c = (signed char)(*source++);
@@ -1014,7 +1011,6 @@ static unsigned char *unpack_byterun1(unsigned char *source, unsigned char *dest
 	    }
 	}
     }
-    
 }
 
 /****************************************************************************************/
@@ -1024,7 +1020,7 @@ static BOOL norm1(LONG count, unsigned char **source_backup,
     	    	  unsigned char **dest, LONG *checksize)
 {
     //if (count >= 0) fprintf(stderr, "XX: non packable %d\n",count);
-    
+
     while(count >= 0)
     {
 	LONG step = count;
@@ -1045,33 +1041,33 @@ static BOOL norm1(LONG count, unsigned char **source_backup,
 	{
 	    *(*dest)++ = *(*source_backup)++;
 	}
-	
+
 	count--;
 
     }
-    
+
     return 1;
 }
 
 static BOOL copy1(unsigned char r, LONG count, unsigned char **dest, LONG *checksize)
 {
     //if (count >= 1) fprintf(stderr, "XX: repeat %02x x %d\n", r, count);
-    
+
     while(--count >= 0)
     {
     	LONG step = count;
-	
+
 	if (step > 127) step = 127;
-	
+
 	count -= step;
 	step = -step;
 	*checksize -= 2;
 	if (*checksize <= 0) return 0;
-	
+
 	*(*dest)++ = (unsigned char)step;
 	*(*dest)++ = r;
     }
-    
+
     return 1;
 }
 
@@ -1082,14 +1078,14 @@ static BOOL pack_byterun1(unsigned char *source, unsigned char *dest,
     LONG samebytes_counter, samebytes, count;
     LONG checksize = check_size;
     unsigned char oldbyte, actbyte;
-    
+
     if (checksize < 0) checksize = 0x7FFFFFFF;
-    
+
     oldbyte = *source;
     samebytes_counter = 0;
     source_backup = source;
     dest_backup = dest;
-    
+
     for(;;)
     {
     	//fprintf(stderr, "size = %d. checksize = %d\n", size, checksize);
@@ -1100,29 +1096,29 @@ static BOOL pack_byterun1(unsigned char *source, unsigned char *dest,
 	    samebytes_counter++;
 	    continue;
 	}
-	
+
 	oldbyte = actbyte;
-	
+
 	samebytes = samebytes_counter;
 	samebytes_counter = 1;
-	
+
 	if (samebytes < 3) continue;
-	
+
 	count = (LONG)(source - source_backup - samebytes - 2);
 	if (!norm1(count, &source_backup, &dest, &checksize)) return 0;
-	
+
 	if (!copy1(source[-2], samebytes, &dest, &checksize)) return 0;
 
     	source_backup = source - 1;
     }
-    //fprintf(stderr, "done\n");    
-    
+    //fprintf(stderr, "done\n");
+
     if (samebytes_counter >= 3)
     {
     	samebytes = samebytes_counter;
 	count = (LONG)(source - source_backup - samebytes - 1);
 	if (!norm1(count, &source_backup, &dest, &checksize)) return 0;
-	if (!copy1(source[-2], samebytes, &dest, &checksize)) return 0;	
+	if (!copy1(source[-2], samebytes, &dest, &checksize)) return 0;
     }
     else
     {
@@ -1130,9 +1126,9 @@ static BOOL pack_byterun1(unsigned char *source, unsigned char *dest,
 	if (!norm1(count, &source_backup, &dest, &checksize)) return 0;
     }
     //fprintf(stderr, "realdone\n");
-    
+
     if (packsize) *packsize = (LONG)(dest - dest_backup);
-    
+
     return 1;
 }
 #endif
@@ -1143,11 +1139,11 @@ static void p2c(unsigned char *source, unsigned char *dest, LONG width, LONG hei
     	    	LONG totplanes, LONG wantplanes, LONG chunkybpr)
 {
     LONG alignedwidth, x, y, p, bpr, bpl;
-    
+
     alignedwidth = (width + 15) & ~15;
     bpr = alignedwidth / 8;
     bpl = bpr * totplanes;
-    
+
     for(y = 0; y < height; y++)
     {
     	for(x = 0; x < width; x++)
@@ -1155,19 +1151,17 @@ static void p2c(unsigned char *source, unsigned char *dest, LONG width, LONG hei
 	    LONG mask   = 0x80 >> (x & 7);
 	    LONG offset = x / 8;
 	    unsigned char chunkypix = 0;
-	    
+
 	    for(p = 0; p < wantplanes; p++)
 	    {
 	    	if (source[p * bpr + offset] & mask) chunkypix |= (1 << p);
 	    }
 	    dest[x] = chunkypix;
 	}
-	
+
 	source += bpl;
 	dest += chunkybpr;
     }
-    
-    
 }
 
 /****************************************************************************************/
@@ -1175,11 +1169,11 @@ static void p2c(unsigned char *source, unsigned char *dest, LONG width, LONG hei
 static void c2p(unsigned char *source, unsigned char *dest, LONG width, LONG height, LONG planes)
 {
     LONG alignedwidth, x, y, p, bpr, bpl;
-    
+
     alignedwidth = (width + 15) & ~15;
     bpr = alignedwidth / 8;
     bpl = bpr * planes;
-    
+
     for(y = 0; y < height; y++)
     {
 	for(x = 0; x < width; x++)
@@ -1200,7 +1194,6 @@ static void c2p(unsigned char *source, unsigned char *dest, LONG width, LONG hei
     	source += width;
     	dest += bpl;
     }
- 
 }
 
 /****************************************************************************************/
@@ -1208,13 +1201,13 @@ static void c2p(unsigned char *source, unsigned char *dest, LONG width, LONG hei
 static void convertbody(struct ILBMImage *img)
 {
     LONG unpackedsize = img->bpr * img->bmh.bmh_Height * img->totdepth;
-    
+
     if (is_png)
         return;
 
     img->planarbuffer = malloc(unpackedsize);
     if (!img->planarbuffer) cleanup("Memory allocation for planar buffer failed!", 1);
-    
+
     if (img->bmh.bmh_Compression == CMP_NONE)
     {
     	memcpy(img->planarbuffer, body, unpackedsize);
@@ -1223,10 +1216,10 @@ static void convertbody(struct ILBMImage *img)
     {
     	unpack_byterun1(body, img->planarbuffer, unpackedsize);
     }
-    
+
     img->chunkybuffer = malloc(img->bmh.bmh_Width * img->bmh.bmh_Height);
     if (!img->chunkybuffer) cleanup("Memory allocation for chunky buffer failed!", 1);
-    
+
     p2c(img->planarbuffer,
     	img->chunkybuffer,
 	img->bmh.bmh_Width,
@@ -1242,35 +1235,35 @@ static UBYTE findcolor(struct Palette *pal, ULONG r, ULONG g, ULONG b, BOOL notr
 {
     ULONG dist, bestdist = 0xFFFFFFFF;
     UBYTE i, besti = 0;
-    
+
     for(i = 0; i < pal->numentries; i++)
     {
     	LONG r1, g1, b1, r2, g2, b2, dr, dg, db;
 
     	if (notrans && i == transparentoption)
     	    continue;
-	
+
 	r1 = (LONG)r;
 	g1 = (LONG)g;
 	b1 = (LONG)b;
-	
+
 	r2 = (LONG)pal->rgb[i][0];
 	g2 = (LONG)pal->rgb[i][1];
     	b2 = (LONG)pal->rgb[i][2];
-	
+
 	dr = r1 - r2;
 	dg = g1 - g2;
 	db = b1 - b2;
-	
+
 	dist = (dr * dr) + (dg * dg) + (db * db);
 	if (dist < bestdist)
 	{
 	    bestdist = dist;
 	    besti = i;
 	}
-	
+
     }
-    
+
     return besti;
 }
 
@@ -1291,7 +1284,7 @@ static void remapplanar(struct ILBMImage *img, struct Palette *pal)
     {
     	img->remaptable[i] = findcolor(pal, img->rgb[i][0], img->rgb[i][1], img->rgb[i][2], FALSE);
     }
-    
+
     for(i = 0; i < img->bmh.bmh_Width * img->bmh.bmh_Height; i++)
     {
     	remapbuffer[i] = img->remaptable[img->chunkybuffer[i]];
@@ -1299,31 +1292,31 @@ static void remapplanar(struct ILBMImage *img, struct Palette *pal)
     	if (remapbuffer[i] > highestcol)
 	    highestcol = remapbuffer[i];
     }
-    
+
     for(i = highestcol; i; i >>= 1) newdepth++;
     if (newdepth == 0) newdepth = 1;
-    
+
     if (newdepth > img->totdepth)
     {
         if (img->planarbuffer)
             free(img->planarbuffer);
-	
+
 	img->planarbuffer = malloc(img->bpr * img->bmh.bmh_Height * newdepth);
 	if (!img->planarbuffer)
 	{
 	    free(remapbuffer);
-	    cleanup("Error re-allocating planar buffer!", 1);	
+	    cleanup("Error re-allocating planar buffer!", 1);
     	}
     }
-  
+
     img->planarbmh.bmh_Width = img->bmh.bmh_Width;
     img->planarbmh.bmh_Height= img->bmh.bmh_Height;
     img->planarbmh.bmh_Depth = newdepth;
-    
+
     memset(img->planarbuffer, 0, img->bpr * img->bmh.bmh_Height * newdepth);
-    
+
     c2p(remapbuffer, img->planarbuffer, img->bmh.bmh_Width, img->bmh.bmh_Height, newdepth);
-    
+
     free(remapbuffer);
 }
 
@@ -1332,9 +1325,9 @@ static void remapplanar(struct ILBMImage *img, struct Palette *pal)
 static void loadimage(char *name, struct ILBMImage *img)
 {
     freeimage(img);
-    
+
     filename = name;
-    
+
     openimage(img);
     checkimage(img);
     scanimage(img);
@@ -1426,7 +1419,7 @@ struct image
 
 #define SET_BYTE(field,value) \
     ACT_STRUCT.field = value
-    
+
 #define SET_WORD(field, value) \
     ACT_STRUCT.field[0] = ((value) >> 8) & 0xFF; \
     ACT_STRUCT.field[1] = (value) & 0xFF;
@@ -1448,9 +1441,8 @@ static void writediskobject(void)
     {
         drawerdataoption = "YES";
     }
-   
+
 #define ACT_STRUCT dobj
-    
     SET_WORD(do_magic, 0xE310);
     SET_WORD(do_version, 1);
     SET_LONG(do_gadget_nextgadget, 0);
@@ -1458,7 +1450,7 @@ static void writediskobject(void)
     SET_WORD(do_gadget_topedge, 0);
     SET_WORD(do_gadget_width, img1.bmh.bmh_Width);
     SET_WORD(do_gadget_height, img1.bmh.bmh_Height);
-    
+
     if (image2option)
     {
     	/* GFLG_GADGHIMAGE + GFLG_GADGIMAGE */
@@ -1469,11 +1461,11 @@ static void writediskobject(void)
     	/* GFLG_GADGIMAGE */
     	SET_WORD(do_gadget_flags, 4);
     }
-    
+
     SET_WORD(do_gadget_activation, 1);
     SET_WORD(do_gadget_gadgettype, 1);
     SET_LONG(do_gadget_gadgetrender, BOOL_YES);
-    
+
     if (image2option)
     {
     	SET_LONG(do_gadget_selectrender, BOOL_YES);
@@ -1482,16 +1474,16 @@ static void writediskobject(void)
     {
     	SET_LONG(do_gadget_selectrender, BOOL_NO);
     }
-    
+
     SET_LONG(do_gadget_gadgettext, 0);
     SET_LONG(do_gadget_mutualexclude, (1 << 31) | (tpdX << 8) | (tpdY << 0));
     SET_LONG(do_gadget_specialinfo, 0);
     SET_WORD(do_gadget_gadgetid, 0);
     SET_LONG(do_gadget_userdata, 1); /* full drawer data */
-    
+
     SET_BYTE(do_type, typeoption);
     SET_BYTE(do_pad, 0);
-    
+
     if (defaulttooloption)
     {
     	SET_LONG(do_defaulttool, BOOL_YES);
@@ -1500,7 +1492,7 @@ static void writediskobject(void)
     {
     	SET_LONG(do_defaulttool, BOOL_NO);
     }
-    
+
     if (tooltypesoption)
     {
     	SET_LONG(do_tooltypes, BOOL_YES);
@@ -1509,7 +1501,7 @@ static void writediskobject(void)
     {
     	SET_LONG(do_tooltypes, BOOL_NO);
     }
-    
+
     SET_LONG(do_currentx, iconleftoption);
     SET_LONG(do_currenty, icontopoption);
 
@@ -1521,11 +1513,10 @@ static void writediskobject(void)
     {
     	SET_LONG(do_drawerdata, BOOL_NO);
     }
-    
-    
+
     SET_LONG(do_toolwindow, 0);
     SET_LONG(do_stacksize, stackoption);
-    
+
     if (fwrite(&dobj, 1, sizeof(dobj), outfile) != sizeof(dobj))
     {
     	cleanup("Error writing diskobject structure to outfile!", 1);
@@ -1537,9 +1528,9 @@ static void writediskobject(void)
 static void writeolddrawerdata(void)
 {
     struct olddrawerdata dd;
-    
+
     if (!drawerdataoption) return;
-    
+
 #undef ACT_STRUCT
 #define ACT_STRUCT dd
 
@@ -1568,7 +1559,6 @@ static void writeolddrawerdata(void)
     {
     	cleanup("Error writing olddrawerdata structure to outfile!", 1);
     }
-
 }
 
 
@@ -1577,9 +1567,9 @@ static void writeolddrawerdata(void)
 static void writenewdrawerdata(void)
 {
     struct newdrawerdata dd;
-    
+
     if (!drawerdataoption) return;
-    
+
 #undef ACT_STRUCT
 #define ACT_STRUCT dd
 
@@ -1590,7 +1580,6 @@ static void writenewdrawerdata(void)
     {
     	cleanup("Error writing newdrawerdata structure to outfile!", 1);
     }
-
 }
 
 /****************************************************************************************/
@@ -1601,12 +1590,11 @@ static void writeword(WORD l)
 
     f[0] = (l >> 8) & 0xFF;
     f[1] = l & 0xFF;
- 
+
     if (fwrite(f, 1, 2, outfile) != 2)
     {
     	cleanup("Error writing word value!", 1);
     }
-    
 }
 
 /****************************************************************************************/
@@ -1619,12 +1607,11 @@ static void writelong(LONG l)
     f[1] = (l >> 16) & 0xFF;
     f[2] = (l >> 8) & 0xFF;
     f[3] = l & 0xFF;
- 
+
     if (fwrite(f, 1, 4, outfile) != 4)
     {
     	cleanup("Error writing long value!", 1);
     }
-    
 }
 
 /****************************************************************************************/
@@ -1650,12 +1637,11 @@ static void writestring(char *s)
     D(printf("String: \"%s\", length %d\n", s, len));
 
     writelong(len);
-        
+
     if (fwrite(s, 1, len, outfile) != len)
     {
     	cleanup("Error writing string!", 1);
     }
-    
 }
 
 /****************************************************************************************/
@@ -1664,7 +1650,7 @@ static void writeimage(struct ILBMImage *img)
 {
     struct image i;
     LONG d, y;
-    
+
 #undef ACT_STRUCT
 #define ACT_STRUCT i
 
@@ -1682,11 +1668,11 @@ static void writeimage(struct ILBMImage *img)
     {
     	cleanup("Error writing image structure to outfile!", 1);
     }
- 
+
     for(d = 0; d < img->planarbmh.bmh_Depth; d++)
     {
     	UBYTE *dat = img->planarbuffer + img->bpr * d;
-	
+
 	for(y = 0; y < img->planarbmh.bmh_Height; y++)
 	{
 	    if(fwrite(dat, 1, img->bpr, outfile) != img->bpr)
@@ -1696,7 +1682,6 @@ static void writeimage(struct ILBMImage *img)
 	    dat += (img->planarbmh.bmh_Depth * img->bpr);
 	}
     }
-          
 }
 
 /****************************************************************************************/
@@ -1730,28 +1715,28 @@ static LONG writefacechunk(void)
 {
     struct facechunk fc;
     LONG palbytes;
-    
+
 #undef ACT_STRUCT
 #define ACT_STRUCT fc
 
     writelong(ID_FACE);
     writelong(sizeof(struct facechunk));
-    
+
     SET_BYTE(fc_width, img1.bmh.bmh_Width - 1);
     SET_BYTE(fc_height, img1.bmh.bmh_Height - 1);
     SET_BYTE(fc_flags, 0);
     SET_BYTE(fc_aspect, 0); // 0x11);
-    
+
     palbytes = (img1.cmapentries > img2.cmapentries) ? img1.cmapentries : img2.cmapentries;
     palbytes = palbytes * 3;
-    
+
     SET_WORD(fc_maxpalettebytes, palbytes - 1);
-    
+
     if (fwrite(&fc, 1, sizeof(fc), outfile) != sizeof(fc))
     {
     	cleanup("Error writing face chunk!", 1);
     }
-    
+
     return sizeof(struct facechunk) + 8;
 }
 
@@ -1771,7 +1756,7 @@ static char * createrle(unsigned long depth, unsigned char *dtype, LONG *dsize, 
 
   buf = malloc(size * 2);
   if (!buf) return NULL;
-  
+
   numcopy = 0;
   numequal = 1;
   bitbuf = 0;
@@ -1838,9 +1823,9 @@ static char * createrle(unsigned long depth, unsigned char *dtype, LONG *dsize, 
   }
   else
     *dtype = 1;
-    
+
   *dsize = ressize;
-  
+
   return buf;
 }
 
@@ -1848,35 +1833,35 @@ static char * createrle(unsigned long depth, unsigned char *dtype, LONG *dsize, 
 
 static LONG writeimagchunk(struct ILBMImage *img)
 {
-    struct imagchunk ic;  
+    struct imagchunk ic;
     LONG imagsize;
     UBYTE skippalette = 0;
     UBYTE *pal, *gfx;
     LONG palsize, gfxsize;
     UBYTE palpacked, gfxpacked;
-    
+
     imagsize = sizeof(struct imagchunk);
-    
+
     /* if this is second image check whether palette is identical to
        the one of first image */
-       
+
     if (img == &img2)
     {
     	if (img1.cmapentries == img2.cmapentries)
 	{
 	    WORD i;
-	    
+
 	    for (i = 0; i < img1.cmapentries; i++)
 	    {
 	    	if (img1.rgb[i][0] != img2.rgb[i][0]) break;
 	    	if (img1.rgb[i][1] != img2.rgb[i][1]) break;
-	    	if (img1.rgb[i][2] != img2.rgb[i][2]) break;		
+	    	if (img1.rgb[i][2] != img2.rgb[i][2]) break;
 	    }
-	    
+
 	    if (i == img1.cmapentries) skippalette = 1;
 	}
     }
-    
+
     if (!skippalette)
     {
     	pal = createrle(8,
@@ -1884,18 +1869,18 @@ static LONG writeimagchunk(struct ILBMImage *img)
 			&palsize,
 			img->cmapentries * 3,
 			(unsigned char *)img->rgb);
-			
+
     	imagsize += palsize;
     }
-    
+
     gfx = createrle(img->bmh.bmh_Depth,
     	    	    &gfxpacked,
 		    &gfxsize,
 		    img->bmh.bmh_Width * img->bmh.bmh_Height,
 		    img->chunkybuffer);
-		
+
     imagsize += gfxsize;
-    
+
 #undef ACT_STRUCT
 #define ACT_STRUCT ic
 
@@ -1914,14 +1899,14 @@ static LONG writeimagchunk(struct ILBMImage *img)
 	SET_BYTE(ic_paletteformat, palpacked);
     	SET_WORD(ic_numpalettebytes, palsize - 1);
     }
-    
+
     SET_BYTE(ic_imageformat, gfxpacked);
     SET_BYTE(ic_depth, img->bmh.bmh_Depth);
     SET_WORD(ic_numimagebytes, gfxsize - 1);
-    
+
     writelong(ID_IMAG);
     writelong(imagsize);
-    
+
     if (fwrite(&ic, 1, sizeof(ic), outfile) != sizeof(ic))
     {
     	cleanup("Error writing imag chunk!", 1);
@@ -1931,27 +1916,27 @@ static LONG writeimagchunk(struct ILBMImage *img)
     {
     	cleanup("Error write gfx data in imag chunk!", 1);
     }
-    
+
     if (!skippalette)
     {
 	if (fwrite(pal, 1, palsize, outfile) != palsize)
 	{
     	    cleanup("Error write palette data in imag chunk!", 1);
-	}    	
+	}
     }
-    
+
     if (imagsize & 1)
     {
     	UBYTE dummy = 0;
-	
+
 	if (fwrite(&dummy, 1, 1, outfile) != 1)
 	{
 	    cleanup("Error writing imag chunk!", 1);
 	}
-	
+
 	imagsize++;
     }
-    
+
     return imagsize + 8;
 }
 
@@ -1969,7 +1954,7 @@ static LONG writeargb(APTR argb, ULONG argb_size)
     Bytef *zdest;
     uLongf zsize, size;
     int err;
-    
+
     zsize = size = argb_size;
 
     zdest = malloc(zsize);
@@ -2017,7 +2002,7 @@ static void write35data(void)
     formsizeseek = ftell(outfile);
     writelong(0x12345678);
     writelong(ID_ICON);
-    
+
     formsize += writefacechunk();
     formsize += writeimagchunk(&img1);
     if (image2option) formsize += writeimagchunk(&img2);
@@ -2053,7 +2038,7 @@ static void write35data(void)
         }
         formsize += 8 + img2.png_size;
     }
-    
+
     fseek(outfile, formsizeseek, SEEK_SET);
     writelong(formsize);
 }
@@ -2069,37 +2054,34 @@ static void writeicon(void)
     D(printf("Writing %s\n", outfilename));
     outfile = fopen(outfilename, "wb");
     if (!outfile) cleanup("Can't open output file for writing!", 1);
-    
+
     writediskobject();
     writeolddrawerdata();
     writeimage(&img1);
-    
+
     if (image2option) writeimage(&img2);
-    
+
     if (defaulttooloption) writestring(defaulttooloption);
-    
+
     if (tooltypesoption)
     {
-    	char **strarray;	
+    	char **strarray;
     	LONG numtooltypes = 0;
-	
+
 	for(strarray = tooltypesoption; *strarray; strarray++, numtooltypes++);
-	
+
 	writelong((numtooltypes + 1) * 4);
 
 	for(strarray = tooltypesoption; *strarray; strarray++)
 	{
 	    writestring(*strarray);
 	}
-	
     }
-    
+
     /* toolwindow would have to be saved in between here if there is any */
-    
     writenewdrawerdata();
-    
+
     write35data();
-    
 }
 
 /****************************************************************************************/
@@ -2107,7 +2089,7 @@ static void writeicon(void)
 static void remapicon(void)
 {
     remapplanar(&img1, &std4colpal);
-    if (image2option) remapplanar(&img2, &std4colpal);       
+    if (image2option) remapplanar(&img2, &std4colpal);
 }
 
 /****************************************************************************************/
