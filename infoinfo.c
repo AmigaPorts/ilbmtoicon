@@ -21,7 +21,7 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
-#elif defined(__amigaos4__) || defined(WARPUP) || defined(__AMIGA__) || defined(__MORPHOS__)
+#elif defined(__amigaos4__) || defined(WARPUP) || defined(__amigaos3__) || defined(__MORPHOS__)
 #define ntohl(x)        (x)
 #define ntohs(x)        (x)
 #define htonl(x)        (x)
