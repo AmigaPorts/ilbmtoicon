@@ -386,6 +386,7 @@ int main(int argc, char **argv)
 
     if (argc != 2 && argc != 3) {
         printf("Usage:\n%s file.info [file.iff] >file.info.src\n", argv[0]);
+        return EXIT_FAILURE;
     }
 
     if (argc == 3)
