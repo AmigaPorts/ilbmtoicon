@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.14.0)
 project(ilbmtoicon VERSION 1.0.0)
 
-# Additional CMake modules
-include(cmake/common/setup_amiga_common.cmake)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+include(CPM-init)
 
 # Set up information for Aminet
 add_project_info(
